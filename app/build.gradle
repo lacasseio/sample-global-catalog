@@ -1,0 +1,20 @@
+plugins {
+    id 'cpp-application'
+    id 'cpp-unit-test'
+}
+
+group = 'com.example'
+
+application {
+    targetMachines.add(machines.macOS.x86_64)
+    dependencies {
+        implementation libs.libB.get()
+        implementation libs.libA.get()
+    }
+}
+
+tasks.register('run', Exec) {
+    dependsOn('installDebug')
+    commandLine('./app')
+    workingDir(layout.buildDirectory.dir('install/main/debug'))
+}

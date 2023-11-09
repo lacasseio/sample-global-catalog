@@ -1,0 +1,38 @@
+static <T> void ifPresent(Provider<T> provider, Action<? super T> action) {
+    def value = provider.orNull
+    if (value != null) {
+        action.execute(value)
+    }
+}
+
+def includeBuildLibB = providers.gradleProperty('build-libB-from-source')
+        .map { Boolean.parseBoolean(it) ? it : null }
+
+def publishLibAV1Task = tasks.register('publishLibA-V1', Exec) {
+    commandLine('./gradlew', 'publish', '-Pversion=1')
+    workingDir('libA')
+}
+
+def publishLibAV2Task = tasks.register('publishLibA-V2', Exec) {
+    commandLine('./gradlew', 'publish', '-Pversion=2')
+    workingDir('libA')
+}
+
+def publishLibBTask = tasks.register('publishLibB', Exec) {
+    commandLine('./gradlew', 'publish')
+    workingDir('libB')
+}
+
+tasks.register('publish') {
+    dependsOn(publishLibAV1Task, publishLibAV2Task, publishLibBTask)
+}
+
+tasks.register('run', Exec) {
+    commandLine('./gradlew', 'run')
+    ifPresent(includeBuildLibB) { args("-DincludeBuild-libB=true") }
+    workingDir('app')
+}
+
+tasks.register('clean', Delete) {
+    delete('app/build', 'libA/build', 'libB/build', 'repo')
+}

@@ -1,0 +1,3 @@
+[libraries]
+libA = { module = 'com.example:libA', version = '2' }
+libB = { module = 'com.example:libB', version = '1' }

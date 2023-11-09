@@ -1,0 +1,20 @@
+pluginManagement {
+    includeBuild '../global-catalog-plugin'
+}
+
+plugins {
+    id 'com.example.global-catalog'
+}
+
+rootProject.name = 'libB'
+
+dependencyResolutionManagement {
+    repositories {
+        maven { url = '../repo' }
+    }
+    versionCatalogs {
+        libs {
+            library('libA', 'com.example', 'libA').version('1')
+        }
+    }
+}

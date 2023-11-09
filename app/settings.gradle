@@ -1,0 +1,19 @@
+pluginManagement {
+    includeBuild '../global-catalog-plugin'
+}
+
+plugins {
+    id 'com.example.global-catalog'
+}
+
+rootProject.name = 'app'
+
+if (System.properties.keySet().contains('includeBuild-libB')) {
+    includeBuild '../libB'
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven { url = '../repo' }
+    }
+}

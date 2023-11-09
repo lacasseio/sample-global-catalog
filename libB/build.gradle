@@ -1,0 +1,26 @@
+plugins {
+    id 'cpp-library'
+    id 'maven-publish'
+}
+
+group = 'com.example'
+version = '1'
+
+library {
+    targetMachines.add(machines.macOS.x86_64)
+    dependencies {
+        implementation libs.libA.get()
+    }
+}
+
+tasks.withType(CppCompile).configureEach { task ->
+    task.macros.put("VERSION", project.version.toString())
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "../repo"
+        }
+    }
+}

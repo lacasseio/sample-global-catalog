@@ -1,0 +1,33 @@
+plugins {
+    id 'cpp-library'
+    id 'maven-publish'
+}
+
+group = 'com.example'
+
+library {
+    // Set the target operating system and architecture for this library
+    targetMachines.add(machines.macOS.x86_64)
+}
+
+def generateTask = tasks.register('generateVersionHeader') { task ->
+    task.doLast {
+        file('src/main/public/libA-version.h').text = """
+            |#pragma once
+            |#define LIBA_VERSION "v${project.version}" 
+            |""".stripMargin()
+    }
+}
+
+tasks.withType(CppCompile).configureEach { task ->
+    task.dependsOn(generateTask)
+    task.macros.put("VERSION", project.version.toString())
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "${rootDir}/../repo"
+        }
+    }
+}
